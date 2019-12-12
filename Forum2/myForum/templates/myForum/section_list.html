@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for section in object_list %}
+        <ul class="list-group" style="margin-top:2%">
+            <li class="list-group-item list-group-item-action active" style="font-weight:bolder" aria-disabled="true">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">{{ section }}</div>
+                        <div class="col-sm-4">Last post</div>
+                        <div class="col-sm-1">Posts</div>
+                        <div class="col-sm-1">Comments</div>
+                    </div>
+                </div>
+            </li>
+            {% for subsection in section.section.all %}
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <a href="{% url 'myForum:posts_list' subsection=subsection.title  %}">
+                                    {{ subsection }}
+                                </a>
+                            </div>
+                            {% with subsection.latestpost.all|first as post %}
+                                <div class="col-sm-4">{{ post.title }}</div>
+                            {% endwith %}
+                            <div class="col-sm-1">{{subsection.subsection.count}}</div>
+                            <div class="col-sm-1">Comments</div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}
