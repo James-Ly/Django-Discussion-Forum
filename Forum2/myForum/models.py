@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     2: Title: Will add later
     '''
     forum_email = models.EmailField(unique=True)
-    profile_pic = models.ImageField(upload_to='profile_pics', blank=True)
+    profile_pic = models.ImageField(upload_to='media/profile_pics', blank=True)
 
     def __str__(self):
         return "@{}".format(self.user.username)
@@ -57,7 +57,6 @@ class Posts(models.Model):
 
     def latestcomment(self):
         return self.post.order_by('-created_date')
-
 
 class Comments(models.Model):
     post = models.ForeignKey(Posts, related_name='post', on_delete=models.CASCADE, blank=False, null=False)

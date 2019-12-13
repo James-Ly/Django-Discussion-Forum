@@ -8,5 +8,5 @@ urlpatterns = [
     path('register/', views.register, name='signup'),
     path('login/', views.user_login, name='login'),
     path('post_list/<subsection>', views.posts_list.as_view(), name='posts_list'),
-    path('comment_list/<post>', views.comments_list.as_view(), name='comments_list'),
+    path('comment_list/<subsection>/<post>/', views.comments_list.as_view(), name='comments_list'),
 ]

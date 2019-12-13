@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+
+    <nav aria-label="breadcrumb" style="margin-top:2%">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#"></a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ subsection.title }}</li>
+        </ol>
+    </nav>
+
     <ul class="list-group" style="margin-top:2%">
         <li class="list-group-item list-group-item-action active" style="font-weight:bolder" aria-disabled="true">
             <div class="container">
@@ -18,7 +27,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-5">
-                            <a href="{% url 'myForum:comments_list' post=post.title %}">
+                            <a href="{% url 'myForum:comments_list' subsection=subsection.title post=post.title %}">
                                 {{ post.title }}
                             </a>
                         </div>

@@ -131,11 +131,12 @@ class posts_list(generic.ListView):
 
 class comments_list(generic.ListView):
     model = models.Comments
+    paginate_by = 25
 
     def get_queryset(self):
         try:
             self.comments = models.Comments.objects.filter(post__title__iexact=self.kwargs.get('post')).order_by(
-                '-created_date')
+                'created_date')
         except models.Comments.DoesNotExist:
             raise Http404
         return self.comments.all()
@@ -143,4 +144,5 @@ class comments_list(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['post'] = self.kwargs.get('post')
+        context['subsection'] = self.kwargs.get('subsection')
         return context

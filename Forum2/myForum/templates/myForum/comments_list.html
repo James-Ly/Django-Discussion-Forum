@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+    <nav aria-label="breadcrumb" style="margin-top:2%">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#"></a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:posts_list' subsection=subsection %}">{{ subsection }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+        </ol>
+    </nav>
+
     <ul class="list-group" style="margin-top:2%">
         <li class="list-group-item list-group-item-action active" style="font-weight:bolder" aria-disabled="true">
             <div class="container">
@@ -10,13 +19,30 @@
         </li>
         {% for item in object_list %}
             <li class="list-group-item" aria-disabled="true">
-                <div class="card mb-3" >
+                <div class="card mb-3">
+                    <div class="row no-gutters" style="background-color:#F6F9FC">
+                        <div class="col-md-1" style="text-align: center">
+                            #{{ forloop.counter }}
+                        </div>
+                        <div class="col-md-11" style="text-align:right">
+                            Posted on: {{ item.created_date }}
+                        </div>
+                    </div>
                     <div class="row no-gutters">
-                        <div class="col-md-3" style="background-color:#F6F9FC">
-                            <img src="..." class="card-img" alt="...">
+                        <div class="col-md-2" style="background-color:#F6F9FC;text-align:center">
+                            {% if not item.user.profile_pic %}
+                                <img src="http://www.murketing.com/journal/wp-content/uploads/2009/04/nopic_192.gif"
+                                     style="width:75%">
+                            {% else %}
+                                <img src="/{{ item.user.profile_pic.url }}"
+                                     style='width:75%'>
+                            {% endif %}
+                            <div class="container">
+                                <p>{{ item.user.user.username }}</p>
+                            </div>
 
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-10">
                             <div class="card-body">
                                 <p class="card-text">
                                     {{ item.content }}
@@ -29,5 +55,73 @@
 
         {% endfor %}
     </ul>
+    {% if is_paginated %}
+        <nav aria-label="Page navigation" style="margin-top:1%">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                {% endif %}
+                {% if page_obj.number > 4 %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">...</a>
+                    </li>
+                    {% for i in paginator.page_range %}
+                        {% if i <= page_obj.number|add:'3' and i >= page_obj.number|add:'-3' %}
+                            {% if i == page_obj.number %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{ i }}" tabindex="-1">{{ i }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}" tabindex="-1">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                            {% if i == page_obj.number|add:'3' and i < paginator.num_pages %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">...</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for i in paginator.page_range %}
+                        {% if i <= page_obj.number|add:'3' %}
+                            {% if i == page_obj.number %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{ i }}" tabindex="-1">{{ i }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}" tabindex="-1">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                            {% if i == page_obj.number|add:'3' and i < paginator.num_pages %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">...</a>
+                                </li>
+                            {% endif %}
+
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    {% endif %}
 
 {% endblock %}
