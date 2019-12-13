@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 
 from myForum import forms
@@ -130,10 +130,16 @@ class posts_list(generic.ListView):
 
 
 class comments_list(generic.ListView):
+    '''
+    List view for the comments
+    '''
     model = models.Comments
-    paginate_by = 25
+    paginate_by = 10
 
     def get_queryset(self):
+        '''
+        The object_list returned will be order by created_date
+        '''
         try:
             self.comments = models.Comments.objects.filter(post__title__iexact=self.kwargs.get('post')).order_by(
                 'created_date')
@@ -142,7 +148,30 @@ class comments_list(generic.ListView):
         return self.comments.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        '''
+        The other parameters passed to the template include the post title and the subsection title for bread crumb
+        '''
         context = super().get_context_data(**kwargs)
         context['post'] = self.kwargs.get('post')
         context['subsection'] = self.kwargs.get('subsection')
+        return context
+
+
+class CreateComment(LoginRequiredMixin, generic.CreateView):
+    fields = ('content',)
+    model = models.Comments
+    template_name = 'myForum/create_comment.html'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        user = self.request.user.userprofile
+        posts = models.Posts.objects.filter(title__iexact=self.kwargs.get('post'))
+        self.object.user = user
+        self.object.posts = posts
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = self.kwargs.get('post')
         return context

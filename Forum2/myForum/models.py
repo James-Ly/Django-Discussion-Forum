@@ -59,7 +59,7 @@ class Posts(models.Model):
         return self.post.order_by('-created_date')
 
 class Comments(models.Model):
-    post = models.ForeignKey(Posts, related_name='post', on_delete=models.CASCADE, blank=False, null=False)
+    post = models.ForeignKey(Posts, related_name='post', on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, related_name='userProfile', on_delete=models.DO_NOTHING)
     created_date = models.DateTimeField(default=timezone.now())
     content = models.TextField()
