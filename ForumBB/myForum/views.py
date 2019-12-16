@@ -7,6 +7,7 @@ from myForum import models
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
+from django.template import RequestContext
 
 # Import the decorators and class Extension to check login session
 from django.contrib.auth.decorators import login_required
@@ -68,6 +69,16 @@ def user_logout(request):
     '''
     logout(request)
     return HttpResponseRedirect(reverse('myForum:homepage'))
+
+
+class User_Profile(generic.DetailView):
+    template_name = 'myForum/user_profile.html'
+    model = models.UserProfile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_profile'] = self.kwargs.get('user_profile')
+        return context
 
 
 def user_login(request):
@@ -174,9 +185,21 @@ class CreateComment(LoginRequiredMixin, generic.CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['post'] = self.kwargs.get('post')
+        context['subsection'] = self.kwargs.get('subsection')
         return context
 
     def get_success_url(self):
         subsection_title = models.SubSection.objects.get(subsection__title__iexact=self.kwargs.get('post')).title
         return reverse('myForum:comments_list',
                        kwargs={'post': self.kwargs.get('post'), 'subsection': subsection_title})
+
+
+'''
+REQUEST CONTEXT
+'''
+
+
+def number_of_posts(request):
+    request_context = RequestContext(request)
+    request_context.push(request, {'number_of_posts': models.Posts.objects.count()})
+    return render(request_context)

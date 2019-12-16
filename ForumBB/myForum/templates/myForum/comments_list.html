@@ -39,7 +39,11 @@
                                      style='width:75%'>
                             {% endif %}
                             <div class="container">
-                                <p>{{ item.user.user.username }}</p>
+                                <p class="comments_list__usertitle"><a href="{% url 'myForum:user_profile' pk=item.user.pk %}">{{ item.user.user.username }}</a>
+                                </p>
+                                <p class="comments_list__email">{{ item.user.forum_email }}</p>
+                                <p class="comments_list__postcount">Total post:{{ item.user.userProfile.count }}</p>
+
                             </div>
 
                         </div>
@@ -130,7 +134,8 @@
             </div>
             {% if user.is_authenticated %}
                 <div class="col-sm-3" style="text-align: right">
-                    <a href="{% url 'myForum:create_comment' post=post.title%}" class="btn btn-primary">Post</a>
+                    <a href="{% url 'myForum:create_comment' subsection=subsection post=post.title %}"
+                       class="btn btn-primary">Post</a>
                 </div>
             {% endif %}
         </div>

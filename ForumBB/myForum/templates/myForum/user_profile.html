@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <nav aria-label="breadcrumb" style="margin-top:2%">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ user_profile }}</li>
+        </ol>
+    </nav>
+
+    <ul class="list-group" style="margin-top:2%">
+        <li class="list-group-item">
+            <div class="container">
+                <div class="row">
+                    User name: {{ userprofile.user.username }}
+                </div>
+                <div class="row">
+                    Email: {{ userprofile.forum_email }}
+                </div>
+                <div class="row">
+                    Post: {{ userprofile.userProfile.count }}
+                </div>
+                <div class="row">
+                    Join forum: {{ userprofile.user.date_joined }}
+                </div>
+            </div>
+        </li>
+    </ul>
+{% endblock %}
