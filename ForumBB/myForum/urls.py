@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('subsection_list/<section>/', views.subsection_list.as_view(), name='subsection_list'),
     path('post_list/<section>/<subsection>/', views.posts_list.as_view(), name='posts_list'),
+    path('create_post/<subsection>/', views.create_post, name='create_post'),
     path('comment_list/<subsection>/<post>/', views.comments_list.as_view(), name='comments_list'),
     path('commentcreate/<subsection>/<post>/', views.CommentCreate, name='commentcreate'),
     path('createcomment/<subsection>/<post>', views.CreateComment, name='createcomment'),

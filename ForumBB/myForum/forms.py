@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import UserProfile, Comments
+from .models import UserProfile, Comments, Posts
 from ckeditor.widgets import CKEditorWidget
 from django.contrib import admin
 
@@ -38,6 +38,12 @@ class UserProfileInfoForm(forms.ModelForm):
 
     def clean(self):
         all_clean_data = super().clean()
+
+
+class PostForm(forms.ModelForm):
+    class Meta():
+        model = Posts
+        fields = ['title', ]
 
 
 class CommentsForm(forms.ModelForm):

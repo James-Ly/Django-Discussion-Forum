@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <nav aria-label="breadcrumb" style="margin-top:2%">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a>
+            </li>
+            <li class="breadcrumb-item"><a
+                    href="{% url 'myForum:posts_list' section=section subsection=subsection %}">{{ subsection }}</a>
+            </li>
+        </ol>
+    </nav>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'myForum:create_post' subsection=subsection %}">
+            {% csrf_token %}
+            {{ post_form.as_p }}
+            {{ comment_form.media }}
+            {{ comment_form.as_p|safe }}
+            <br>
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% endif %}
+{% endblock %}

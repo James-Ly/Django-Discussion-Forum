@@ -151,12 +151,39 @@ class posts_list(generic.ListView):
         return context
 
 
-class comments_list(generic.ListView, generic.edit.FormMixin):
+@login_required
+def create_post(request, subsection):
+    '''
+    Create new post and comment
+    '''
+    if request.method == 'POST':
+        post_form = forms.PostForm(data=request.POST)
+        comment_form = forms.CommentsForm(data=request.POST)
+        if post_form.is_valid() and comment_form.is_valid():
+            newpost = post_form.save(commit=False)
+            newpost.subsection = models.SubSection.objects.get(title__iexact=subsection)
+            newpost.user = request.user.userprofile
+            newpost.save()
+            newcomment = comment_form.save(commit=False)
+            newcomment.post = newpost
+            newcomment.user = request.user.userprofile
+            newcomment.save()
+            return HttpResponseRedirect(reverse('myForum:comments_list',
+                                                kwargs={'post': newpost.title, 'subsection': newpost.subsection.title}))
+        else:
+            print(post_form.errors, comment_form.errors)
+    post_form = forms.PostForm()
+    comment_form = forms.CommentsForm()
+    return render(request, 'myForum/createpost.html',
+                  {'post_form': post_form, 'comment_form': comment_form, 'subsection': subsection,
+                   'section': models.SubSection.objects.get(title__iexact=subsection).section.title})
+
+
+class comments_list(generic.ListView):
     '''
     List view for the comments
     '''
     model = models.Comments
-    form_class = forms.CommentsForm
     paginate_by = 10
 
     def get_queryset(self):
@@ -183,6 +210,8 @@ class comments_list(generic.ListView, generic.edit.FormMixin):
 
 
 @login_required
+
+
 def CommentCreate(request, subsection, post):
     form = forms.CommentsForm()
     post = post
@@ -203,5 +232,4 @@ def CreateComment(request, post, subsection):
             comment.save()
         else:
             print(comment_form.errors)
-    print('Saving successfully')
     return HttpResponseRedirect(reverse('myForum:comments_list', kwargs={'post': post, 'subsection': subsection}))

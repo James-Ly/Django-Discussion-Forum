@@ -50,7 +50,7 @@ class Posts(models.Model):
     created_date = models.DateTimeField(default=timezone.now())
     last_update = models.DateTimeField(default=timezone.now())
     subsection = models.ForeignKey(SubSection, related_name='subsection', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING)
 
     def get_absolute_url(self):
         pass

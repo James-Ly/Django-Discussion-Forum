@@ -4,7 +4,8 @@
     <nav aria-label="breadcrumb" style="margin-top:2%">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a>
+            </li>
             <li class="breadcrumb-item active" aria-current="page">{{ subsection.title }}</li>
         </ol>
     </nav>
@@ -39,6 +40,13 @@
             </li>
         {% endfor %}
     </ul>
+
+    {% if user.is_authenticated %}
+        <div class="col-sm-3" style="margin-top: 2%;text-align: left">
+            <a href="{% url 'myForum:create_post' subsection=subsection %}"
+               class="btn btn-primary">New Topic</a>
+        </div>
+    {% endif %}
 
     {% if is_paginated %}
         <nav aria-label="Page navigation" style="margin-top:1%">
@@ -108,6 +116,7 @@
         </nav>
 
     {% endif %}
+
 
 
 {% endblock %}
