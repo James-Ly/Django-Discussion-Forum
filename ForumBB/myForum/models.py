@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from ckeditor.fields import RichTextField
 
 
 # Create your models here.
@@ -63,4 +64,4 @@ class Comments(models.Model):
     user = models.ForeignKey(UserProfile, related_name='userProfile', on_delete=models.DO_NOTHING)
     created_date = models.DateTimeField(default=timezone.now())
     last_update = models.DateTimeField(default=timezone.now())
-    content = models.TextField()
+    content = RichTextField()

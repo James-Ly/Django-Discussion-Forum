@@ -6,7 +6,7 @@ from myForum import models
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.template import RequestContext
 
 # Import the decorators and class Extension to check login session
@@ -114,6 +114,16 @@ VIEW FOR SUB-SECTION
 '''
 
 
+class subsection_list(generic.ListView):
+    model = models.SubSection
+    template_name = 'myForum/subsection_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section'] = self.kwargs.get('section')
+        return context
+
+
 class posts_list(generic.ListView):
     model = models.Posts
     paginate_by = 25
@@ -137,14 +147,16 @@ class posts_list(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['subsection'] = self.kwargs.get('subsection')
+        context['section'] = self.kwargs.get('section')
         return context
 
 
-class comments_list(generic.ListView):
+class comments_list(generic.ListView, generic.edit.FormMixin):
     '''
     List view for the comments
     '''
     model = models.Comments
+    form_class = forms.CommentsForm
     paginate_by = 10
 
     def get_queryset(self):
@@ -165,41 +177,31 @@ class comments_list(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['post'] = self.kwargs.get('post')
         context['subsection'] = self.kwargs.get('subsection')
+        section = models.SubSection.objects.get(title__iexact=self.kwargs.get('subsection')).section
+        context['section'] = section.title
         return context
 
 
-class CreateComment(LoginRequiredMixin, generic.CreateView):
-    fields = ('content',)
-    model = models.Comments
-    template_name = 'myForum/create_comment.html'
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        user = self.request.user.userprofile
-        post = models.Posts.objects.get(title__iexact=self.kwargs.get('post'))
-        self.object.user = user
-        self.object.post = post
-        self.object.save()
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['post'] = self.kwargs.get('post')
-        context['subsection'] = self.kwargs.get('subsection')
-        return context
-
-    def get_success_url(self):
-        subsection_title = models.SubSection.objects.get(subsection__title__iexact=self.kwargs.get('post')).title
-        return reverse('myForum:comments_list',
-                       kwargs={'post': self.kwargs.get('post'), 'subsection': subsection_title})
+@login_required
+def CommentCreate(request, subsection, post):
+    form = forms.CommentsForm()
+    post = post
+    subsection = subsection
+    section = models.SubSection.objects.get(title__iexact=subsection).section.title
+    return render(request, 'myForum/commentcreate.html',
+                  {'form': form, 'post': post, 'subsection': subsection, 'section': section})
 
 
-'''
-REQUEST CONTEXT
-'''
-
-
-def number_of_posts(request):
-    request_context = RequestContext(request)
-    request_context.push(request, {'number_of_posts': models.Posts.objects.count()})
-    return render(request_context)
+@login_required
+def CreateComment(request, post, subsection):
+    if request.method == 'POST':
+        comment_form = forms.CommentsForm(data=request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.user = request.user.userprofile
+            comment.post = models.Posts.objects.get(title__iexact=post)
+            comment.save()
+        else:
+            print(comment_form.errors)
+    print('Saving successfully')
+    return HttpResponseRedirect(reverse('myForum:comments_list', kwargs={'post': post, 'subsection': subsection}))

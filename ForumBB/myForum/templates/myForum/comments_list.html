@@ -3,9 +3,11 @@
     <nav aria-label="breadcrumb" style="margin-top:2%">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="#"></a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a>
+            </li>
             <li class="breadcrumb-item"><a
-                    href="{% url 'myForum:posts_list' subsection=subsection %}">{{ subsection }}</a></li>
+                    href="{% url 'myForum:posts_list' section=section subsection=subsection %}">{{ subsection }}</a>
+            </li>
             <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
         </ol>
     </nav>
@@ -39,7 +41,8 @@
                                      style='width:75%'>
                             {% endif %}
                             <div class="container">
-                                <p class="comments_list__usertitle"><a href="{% url 'myForum:user_profile' pk=item.user.pk %}">{{ item.user.user.username }}</a>
+                                <p class="comments_list__usertitle"><a
+                                        href="{% url 'myForum:user_profile' pk=item.user.pk %}">{{ item.user.user.username }}</a>
                                 </p>
                                 <p class="comments_list__email">{{ item.user.forum_email }}</p>
                                 <p class="comments_list__postcount">Total post:{{ item.user.userProfile.count }}</p>
@@ -50,7 +53,7 @@
                         <div class="col-md-10">
                             <div class="card-body">
                                 <p class="card-text">
-                                    {{ item.content }}
+                                    {{ item.content|safe }}
                                 </p>
                             </div>
                         </div>
@@ -134,12 +137,20 @@
             </div>
             {% if user.is_authenticated %}
                 <div class="col-sm-3" style="text-align: right">
-                    <a href="{% url 'myForum:create_comment' subsection=subsection post=post.title %}"
+                    <a href="{% url 'myForum:commentcreate' subsection=subsection post=post.title %}"
                        class="btn btn-primary">Post</a>
                 </div>
             {% endif %}
         </div>
     </div>
+
+    <form method="post" action="{% url 'myForum:createcomment' subsection=subsection post=post %}">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.content }}
+        <br>
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
 
 
 {% endblock %}

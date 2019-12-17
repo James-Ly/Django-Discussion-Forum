@@ -4,7 +4,7 @@
     <nav aria-label="breadcrumb" style="margin-top:2%">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="#"></a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ subsection.title }}</li>
         </ol>
     </nav>

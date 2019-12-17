@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myForum import models
+from myForum import models, forms
 
 # Register your models here.
 
