@@ -3,7 +3,8 @@
     <nav aria-label="breadcrumb" style="margin-top:2%">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'myForum:homepage' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myForum:subsection_list' section=section %}">{{ section }}</a>
+            </li>
             <li class="breadcrumb-item"><a
                     href="{% url 'myForum:posts_list' section=section subsection=subsection %}">{{ subsection }}</a>
             </li>
@@ -11,11 +12,13 @@
                     href="{% url 'myForum:comments_list' subsection=subsection post=post %}">{{ post }}</a></li>
         </ol>
     </nav>
-    <form method="post" action="{% url 'myForum:createcomment' subsection=subsection post=post %}">
-        {% csrf_token %}
-        {{ form.media }}
-        {{ form.content }}
-        <br>
-        <input type="submit" value="Submit" class="btn btn-primary">
-    </form>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'myForum:createcomment' subsection=subsection post=post %}">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.content }}
+            <br>
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% endif %}
 {% endblock %}
