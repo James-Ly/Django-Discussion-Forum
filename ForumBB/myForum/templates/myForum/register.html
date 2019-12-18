@@ -5,7 +5,7 @@
             Signup for a new account
         </div>
         <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for error in user_form.errors.username %}
                     <div class="alert alert-warning" role="alert">

@@ -19,7 +19,7 @@ class UserProfile(models.Model):
     2: Title: Will add later
     '''
     forum_email = models.EmailField(unique=True)
-    profile_pic = models.ImageField(upload_to='media/profile_pics', blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
 
     def __str__(self):
         return "@{}".format(self.user.username)

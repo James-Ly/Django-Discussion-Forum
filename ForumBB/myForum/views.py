@@ -179,11 +179,12 @@ def create_post(request, subsection):
                    'section': models.SubSection.objects.get(title__iexact=subsection).section.title})
 
 
-class comments_list(generic.ListView):
+class comments_list(generic.ListView,generic.edit.FormMixin):
     '''
     List view for the comments
     '''
     model = models.Comments
+    form_class = forms.CommentsForm
     paginate_by = 10
 
     def get_queryset(self):
