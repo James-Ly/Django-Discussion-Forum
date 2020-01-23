@@ -46,3 +46,5 @@ Setup the forum:
 Your simple discussion forum has been completed and up for running.
 You can now create a user account to post a new topic or comment in topic that you like.
 ```
+
+Have a look at the demo here: http://jamessly.pythonanywhere.com/
