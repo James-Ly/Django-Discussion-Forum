@@ -37,3 +37,12 @@ Your local web app will be up and running on port 8000.
 ### 2. Setup the forum
 Firstly, access the admin page with the following syntax:
 > {{website url}}/admin
+
+Setup the forum:
+- Major section
+- Minor/ sub section
+
+```
+Your simple discussion forum has been completed and up for running.
+You can now create a user account to post a new topic or comment in topic that you like.
+```
